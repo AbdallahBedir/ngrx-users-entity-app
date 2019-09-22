@@ -1,0 +1,100 @@
+<div class="users-overview m-5">
+  <div class="row my-3">
+    <div class="col-md-6">
+      <button class="btn btn-default" (click)="editMode = false;openModal(template)">Add User</button> &nbsp;
+      <button class="btn btn-danger" (click)="openModal(deleteAllTemplate)">Delete All Users</button>
+    </div>
+  </div>
+  <table class="table table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Website</th>
+        <th scope="col">Handle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users$ | async">
+        <th scope="row">{{user.id}}</th>
+        <td>{{user.name}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.phone}}</td>
+        <td>
+          <a href="user.website">
+            {{user.website}}
+          </a>
+        </td>
+        <td>
+          <fa-icon [icon]="icons.edit" (click)="getUserDetails(user);editMode = true;openModal(template)"></fa-icon>&nbsp;
+          <fa-icon [icon]="icons.remove" (click)="setSelectedUserId(user.id);openModal(deleteTemplate)" [styles]="{ 'color': 'crimson'}"></fa-icon>
+        </td>
+      </tr>
+      <tr *ngIf="(users$ | async).length == 0" style="text-align: center;">
+        <td colspan="6">
+            No users found
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #template>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Modal</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="form-group">
+          <label for="exampleInputName">Name</label>
+          <input type="text" [(ngModel)]="payload.name" name="name" class="form-control" id="exampleInputName" aria-describedby="nameHelp" placeholder="Enter name">          
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+          <input type="email" [(ngModel)]="payload.email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPhone">Phone</label>
+          <input type="text" [(ngModel)]="payload.phone" name="phone" class="form-control" id="exampleInputPhone" aria-describedby="phoneHelp" placeholder="Enter phone">          
+        </div>
+        <div class="form-group">
+            <label for="exampleInputWebsite">Website</label>
+            <input type="url" [(ngModel)]="payload.website" name="website" class="form-control" id="exampleInputWebsite" aria-describedby="websiteHelp" placeholder="Enter website">          
+        </div>
+        <button type="submit" class="btn btn-primary" (click)="editMode ? updateUser() : addUser()">{{ editMode ? 'Update' : 'Submit'}}</button>
+      </form>
+    </div>
+</ng-template>
+
+
+<ng-template #deleteTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Modal</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h6 class="my-3">Are you sure you want to delete this user ?</h6>
+    <button type="submit" class="btn btn-danger" (click)="deleteUser()">Delete</button>
+  </div>
+</ng-template>
+
+<ng-template #deleteAllTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Modal</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h6 class="my-3">Are you sure you want to delete all users ?</h6>
+    <button type="submit" class="btn btn-danger" (click)="deleteAllUsers()">Delete</button>
+  </div>
+</ng-template>
